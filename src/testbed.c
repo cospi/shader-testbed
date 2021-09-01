@@ -1,8 +1,10 @@
 #include "testbed.h"
 
 #include "gl.h"
+#include "mesh.h"
 #include "shader.h"
 #include "texture.h"
+#include "vertex_attribute_descriptor.h"
 
 #define TEXTURE_COUNT 4
 
@@ -15,8 +17,7 @@ static Shader *s_shader = NULL;
 static GLint s_time_uniform_location = -1;
 static GLint s_delta_time_uniform_location = -1;
 static Texture *s_textures[TEXTURE_COUNT] = { NULL, NULL, NULL, NULL };
-static GLuint s_vertex_array = 0;
-static GLuint s_buffers[2] = { 0, 0 };
+static Mesh s_quad_mesh = { 0 };
 
 static void init_shader(void)
 {
@@ -70,37 +71,36 @@ static void reload_textures(void)
     init_textures();
 }
 
-static void init_vertex_array_and_buffers(void)
+static void init_quad_mesh(void)
 {
-    glGenVertexArrays(1, &s_vertex_array);
-    glBindVertexArray(s_vertex_array);
-
-    glGenBuffers(2, s_buffers);
-
-    glBindBuffer(GL_ARRAY_BUFFER, s_buffers[0]);
+    VertexAttributeDescriptor vertex_attribute_descriptors[] = {
+        { .index = 0, .dimension = 3, .type = GL_FLOAT, .normalized = GL_FALSE, .offset = 0 },
+        { .index = 1, .dimension = 2, .type = GL_FLOAT, .normalized = GL_FALSE, .offset = 0 }
+    };
     GLfloat vertices[] = {
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
         -1.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_buffers[1]);
     GLushort indices[] = { 0, 1, 2, 0, 2, 3 };
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid *)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
+    mesh_init(
+        &s_quad_mesh,
+        vertex_attribute_descriptors,
+        2,
+        5 * sizeof(GLfloat),
+        vertices,
+        sizeof(vertices),
+        indices,
+        6
+    );
 }
 
 void testbed_init(void)
 {
     init_shader();
     init_textures();
-    init_vertex_array_and_buffers();
+    init_quad_mesh();
 }
 
 void testbed_update(GLsizei width, GLsizei height, long double time, long double delta_time)
@@ -127,8 +127,7 @@ void testbed_update(GLsizei width, GLsizei height, long double time, long double
         }
     }
 
-    glBindVertexArray(s_vertex_array);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, NULL);
+    mesh_draw(&s_quad_mesh);
 }
 
 void testbed_reload(void)
