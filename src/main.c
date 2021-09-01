@@ -3,7 +3,7 @@
 #include <Windows.h>
 
 #include "gl.h"
-#include "shader.h"
+#include "testbed.h"
 
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_ACCELERATION_ARB 0x2003
@@ -394,35 +394,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
     s_width = (UINT)(window_rect.right - window_rect.left);
     s_height = (UINT)(window_rect.bottom - window_rect.top);
 
-    Shader *shader = shader_create("res/shaders/vertex.shader", "res/shaders/fragment.shader");
-    if (shader == NULL) {
-        show_error(L"Shader creation failed.");
+    if (!testbed_init()) {
+        show_error(L"Initializing testbed failed.");
         return -1;
     }
-
-    GLuint vertex_array;
-    glGenVertexArrays(1, &vertex_array);
-    glBindVertexArray(vertex_array);
-
-    GLuint buffers[2];
-    glGenBuffers(2, buffers);
-
-    glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-    GLfloat vertices[] = {
-        -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, buffers[1]);
-    GLushort indices[] = { 0, 1, 2 };
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid *)(3 * sizeof(GLfloat)));
 
     ShowWindow(window, SW_SHOW);
 
@@ -433,12 +408,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
             DispatchMessageW(&message);
         }
 
-        glViewport(0, 0, (GLsizei)s_width, (GLsizei)s_height);
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(shader->program);
-        glBindVertexArray(vertex_array);
-        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL);
+        testbed_update((GLsizei)s_width, (GLsizei)s_height);
 
         SwapBuffers(device_context);
     }
