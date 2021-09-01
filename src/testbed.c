@@ -75,7 +75,7 @@ static void init_quad_mesh(void)
 {
     VertexAttributeDescriptor vertex_attribute_descriptors[] = {
         { .index = 0, .dimension = 3, .type = GL_FLOAT, .normalized = GL_FALSE, .offset = 0 },
-        { .index = 1, .dimension = 2, .type = GL_FLOAT, .normalized = GL_FALSE, .offset = 0 }
+        { .index = 1, .dimension = 2, .type = GL_FLOAT, .normalized = GL_FALSE, .offset = 3 * sizeof(GLfloat) }
     };
     GLfloat vertices[] = {
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
