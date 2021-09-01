@@ -3,6 +3,7 @@
 #include <Windows.h>
 
 #include "gl.h"
+#include "shader.h"
 
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_ACCELERATION_ARB 0x2003
@@ -393,36 +394,11 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
     s_width = (UINT)(window_rect.right - window_rect.left);
     s_height = (UINT)(window_rect.bottom - window_rect.top);
 
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    const GLchar *vertex_shader_source =
-        "#version 330\n"
-        "layout (location = 0) in vec3 in_position;\n"
-        "layout (location = 1) in vec3 in_color;\n"
-        "out vec3 color;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(in_position, 1.0);\n"
-        "    color = in_color;\n"
-        "}\n";
-    glShaderSource(vertex_shader, 1, &vertex_shader_source, NULL);
-    glCompileShader(vertex_shader);
-
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    const GLchar *fragment_shader_source =
-        "#version 330\n"
-        "in vec3 color;\n"
-        "out vec4 out_color;\n"
-        "void main()\n"
-        "{\n"
-        "    out_color = vec4(color, 1.0);\n"
-        "}\n";
-    glShaderSource(fragment_shader, 1, &fragment_shader_source, NULL);
-    glCompileShader(fragment_shader);
-
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
-    glLinkProgram(program);
+    Shader *shader = shader_create("res/shaders/vertex.shader", "res/shaders/fragment.shader");
+    if (shader == NULL) {
+        show_error(L"Shader creation failed.");
+        return -1;
+    }
 
     GLuint vertex_array;
     glGenVertexArrays(1, &vertex_array);
@@ -460,7 +436,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
         glViewport(0, 0, (GLsizei)s_width, (GLsizei)s_height);
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(program);
+        glUseProgram(shader->program);
         glBindVertexArray(vertex_array);
         glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_SHORT, NULL);
 
