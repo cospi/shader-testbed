@@ -8,6 +8,7 @@
 typedef ptrdiff_t GLsizeiptr;
 typedef char GLchar;
 
+#define GL_TEXTURE0 0x84C0
 #define GL_STATIC_DRAW 0x88E4
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
@@ -36,6 +37,8 @@ typedef void (APIENTRY * PFNGLGETPROGRAMIVPROC)(GLuint, GLenum, GLint *);
 typedef void (APIENTRY * PFNGLUSEPROGRAMPROC)(GLuint);
 typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC)(GLuint, const GLchar *);
 typedef void (APIENTRY * PFNGLUNIFORM1FPROC)(GLint, GLfloat);
+typedef void (APIENTRY * PFNGLUNIFORM1IPROC)(GLint, GLint);
+typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
 
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLGENBUFFERSPROC glGenBuffers;
@@ -57,5 +60,7 @@ extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1FPROC glUniform1f;
+extern PFNGLUNIFORM1IPROC glUniform1i;
+extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 
 #endif // SHADER_TESTBED_GL_H_

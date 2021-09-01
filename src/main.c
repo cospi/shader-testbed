@@ -210,6 +210,8 @@ static bool init_gl_extensions(void)
     INIT_PROC(PFNGLUSEPROGRAMPROC, glUseProgram);
     INIT_PROC(PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation);
     INIT_PROC(PFNGLUNIFORM1FPROC, glUniform1f);
+    INIT_PROC(PFNGLUNIFORM1IPROC, glUniform1i);
+    INIT_PROC(PFNGLACTIVETEXTUREPROC, glActiveTexture);
 
     #undef INIT_PROC
 
