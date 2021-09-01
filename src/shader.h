@@ -1,6 +1,8 @@
 #ifndef SHADER_TESTBED_SHADER_H_
 #define SHADER_TESTBED_SHADER_H_
 
+#include <stddef.h>
+
 #include <gl/GL.h>
 
 typedef struct Shader {

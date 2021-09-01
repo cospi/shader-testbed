@@ -34,6 +34,8 @@ typedef void (APIENTRY * PFNGLATTACHSHADERPROC)(GLuint, GLuint);
 typedef void (APIENTRY * PFNGLLINKPROGRAMPROC)(GLuint);
 typedef void (APIENTRY * PFNGLGETPROGRAMIVPROC)(GLuint, GLenum, GLint *);
 typedef void (APIENTRY * PFNGLUSEPROGRAMPROC)(GLuint);
+typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC)(GLuint, const GLchar *);
+typedef void (APIENTRY * PFNGLUNIFORM1FPROC)(GLint, GLfloat);
 
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLGENBUFFERSPROC glGenBuffers;
@@ -53,5 +55,7 @@ extern PFNGLATTACHSHADERPROC glAttachShader;
 extern PFNGLLINKPROGRAMPROC glLinkProgram;
 extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 extern PFNGLUSEPROGRAMPROC glUseProgram;
+extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
+extern PFNGLUNIFORM1FPROC glUniform1f;
 
 #endif // SHADER_TESTBED_GL_H_

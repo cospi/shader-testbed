@@ -30,6 +30,8 @@ static bool s_running = true;
 static UINT s_width = 0;
 static UINT s_height = 0;
 
+// SetPixelFormat can only be called once on a device context.
+// Therefore, a dummy device context is necessary for initializing the context creation extensions.
 static bool init_gl_context_creation_extensions(HINSTANCE instance)
 {
     wchar_t window_class_name[] = L"ShaderTestbedWGLExtensionsWindowClass";
@@ -206,6 +208,8 @@ static bool init_gl_extensions(void)
     INIT_PROC(PFNGLLINKPROGRAMPROC, glLinkProgram);
     INIT_PROC(PFNGLGETPROGRAMIVPROC, glGetProgramiv);
     INIT_PROC(PFNGLUSEPROGRAMPROC, glUseProgram);
+    INIT_PROC(PFNGLGETUNIFORMLOCATIONPROC, glGetUniformLocation);
+    INIT_PROC(PFNGLUNIFORM1FPROC, glUniform1f);
 
     #undef INIT_PROC
 
@@ -401,6 +405,16 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
 
     ShowWindow(window, SW_SHOW);
 
+    long double time = 0.0L;
+    LARGE_INTEGER query_performance_result;
+    // QueryPerformaceFrequency and QueryPerformanceCounter never fail on Windows XP or later.
+    long double performance_frequency;
+    QueryPerformanceFrequency(&query_performance_result);
+    performance_frequency = (long double)query_performance_result.QuadPart;
+    LONGLONG previous_performance_counter;
+    QueryPerformanceCounter(&query_performance_result);
+    previous_performance_counter = query_performance_result.QuadPart;
+
     while (s_running) {
         MSG message;
         while (PeekMessageW(&message, NULL, 0, 0, PM_REMOVE) != 0) {
@@ -408,7 +422,12 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
             DispatchMessageW(&message);
         }
 
-        testbed_update((GLsizei)s_width, (GLsizei)s_height);
+        QueryPerformanceCounter(&query_performance_result);
+        LONGLONG performance_counter = query_performance_result.QuadPart;
+        long double delta_time = (performance_counter - previous_performance_counter) / performance_frequency;
+        time += delta_time;
+        testbed_update((GLsizei)s_width, (GLsizei)s_height, time, delta_time);
+        previous_performance_counter = performance_counter;
 
         SwapBuffers(device_context);
     }
