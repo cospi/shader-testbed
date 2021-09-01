@@ -74,7 +74,7 @@ static GLuint create_shader_from_path(GLenum type, const char *path)
     return shader;
 }
 
-static GLuint create_program(GLuint vertex_shader, GLuint fragment_shader)
+static GLuint create_program_from_shaders(GLuint vertex_shader, GLuint fragment_shader)
 {
     GLuint program = glCreateProgram();
     if (program == 0) {
@@ -95,42 +95,47 @@ static GLuint create_program(GLuint vertex_shader, GLuint fragment_shader)
     return program;
 }
 
-Shader *shader_create(const char *vertex_shader_path, const char *fragment_shader_path)
+static GLuint create_program_from_paths(const char *vertex_shader_path, const char *fragment_shader_path)
 {
-    GLuint vertex_shader, fragment_shader, program;
-    Shader *shader;
-
-    vertex_shader = create_shader_from_path(GL_VERTEX_SHADER, vertex_shader_path);
+    GLuint vertex_shader = create_shader_from_path(GL_VERTEX_SHADER, vertex_shader_path);
     if (vertex_shader == 0) {
-        return NULL;
+        return 0;
     }
 
-    fragment_shader = create_shader_from_path(GL_FRAGMENT_SHADER, fragment_shader_path);
+    GLuint fragment_shader = create_shader_from_path(GL_FRAGMENT_SHADER, fragment_shader_path);
     if (fragment_shader == 0) {
-        goto error_delete_vertex_shader;
+        glDeleteShader(vertex_shader);
+        return 0;
     }
 
-    program = create_program(vertex_shader, fragment_shader);
-    if (program == 0) {
-        goto error_delete_fragment_shader;
-    }
-
-    shader = malloc(sizeof(Shader));
-    if (shader == NULL) {
-        goto error_delete_program;
-    }
-
-    shader->program = program;
+    GLuint program = create_program_from_shaders(vertex_shader, fragment_shader);
     // Vertex and fragment shader are no more necessary after the program has been created.
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
-    return shader;
+    return program;
+}
 
-error_delete_program:
-    glDeleteProgram(program);
-error_delete_fragment_shader:
-    glDeleteShader(fragment_shader);
-error_delete_vertex_shader:
-    glDeleteShader(vertex_shader);
-    return NULL;
+Shader *shader_create(const char *vertex_shader_path, const char *fragment_shader_path)
+{
+    GLuint program = create_program_from_paths(vertex_shader_path, fragment_shader_path);
+    if (program == 0) {
+        return NULL;
+    }
+
+    Shader *shader = malloc(sizeof(Shader));
+    if (shader == NULL) {
+        glDeleteProgram(program);
+        return NULL;
+    }
+
+    shader->program = program;
+    return shader;
+}
+
+void shader_destroy(Shader *shader)
+{
+    if (shader != NULL) {
+        glDeleteProgram(shader->program);
+        free(shader);
+    }
 }

@@ -29,6 +29,7 @@ static PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = NULL;
 static bool s_running = true;
 static UINT s_width = 0;
 static UINT s_height = 0;
+static bool s_reload_testbed = false;
 
 // SetPixelFormat can only be called once on a device context.
 // Therefore, a dummy device context is necessary for initializing the context creation extensions.
@@ -223,16 +224,23 @@ static bool init_gl_extensions(void)
 static LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM w_param, LPARAM l_param)
 {
     switch (message) {
-    case WM_SIZE:
-        s_width = LOWORD(l_param);
-        s_height = HIWORD(l_param);
-        return 0;
     case WM_CLOSE:
         s_running = false;
         return 0;
+    case WM_SIZE:
+        s_width = LOWORD(l_param);
+        s_height = HIWORD(l_param);
+        break;
+    case WM_KEYDOWN:
+        if (w_param == VK_F5) {
+            s_reload_testbed = true;
+        }
+        break;
     default:
-        return DefWindowProcW(window, message, w_param, l_param);
+        break;
     }
+
+    return DefWindowProcW(window, message, w_param, l_param);
 }
 
 static void show_error(LPCWSTR error)
@@ -400,10 +408,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
     s_width = (UINT)(window_rect.right - window_rect.left);
     s_height = (UINT)(window_rect.bottom - window_rect.top);
 
-    if (!testbed_init()) {
-        show_error(L"Initializing testbed failed.");
-        return -1;
-    }
+    testbed_init();
 
     ShowWindow(window, SW_SHOW);
 
@@ -422,6 +427,11 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
         while (PeekMessageW(&message, NULL, 0, 0, PM_REMOVE) != 0) {
             TranslateMessage(&message);
             DispatchMessageW(&message);
+        }
+
+        if (s_reload_testbed) {
+            s_reload_testbed = false;
+            testbed_reload();
         }
 
         QueryPerformanceCounter(&query_performance_result);

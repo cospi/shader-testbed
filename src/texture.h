@@ -15,5 +15,6 @@ typedef struct Texture {
 
 Texture *texture_create_from_image(const Image *image);
 Texture *texture_create_from_tga(const char *tga_path);
+void texture_destroy(Texture *texture);
 
 #endif // SHADER_TESTBED_TEXTURE_H_

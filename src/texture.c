@@ -55,3 +55,11 @@ Texture *texture_create_from_tga(const char *tga_path)
     image_destroy(image);
     return texture;
 }
+
+void texture_destroy(Texture *texture)
+{
+    if (texture != NULL) {
+        glDeleteTextures(1, &texture->texture);
+        free(texture);
+    }
+}

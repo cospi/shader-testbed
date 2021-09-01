@@ -10,5 +10,6 @@ typedef struct Shader {
 } Shader;
 
 Shader *shader_create(const char *vertex_shader_path, const char *fragment_shader_path);
+void shader_destroy(Shader *shader);
 
 #endif // SHADER_TESTBED_SHADER_H_
