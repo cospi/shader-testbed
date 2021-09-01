@@ -111,12 +111,12 @@ void testbed_update(GLsizei width, GLsizei height, long double time, long double
 
     if (s_shader != NULL) {
         glUseProgram(s_shader->program);
-    }
-    if (s_time_uniform_location != -1) {
-        glUniform1f(s_time_uniform_location, (float)time);
-    }
-    if (s_delta_time_uniform_location != -1) {
-        glUniform1f(s_delta_time_uniform_location, (float)delta_time);
+        if (s_time_uniform_location != -1) {
+            glUniform1f(s_time_uniform_location, (float)time);
+        }
+        if (s_delta_time_uniform_location != -1) {
+            glUniform1f(s_delta_time_uniform_location, (float)delta_time);
+        }
     }
 
     for (int i = 0; i < TEXTURE_COUNT; ++i) {
