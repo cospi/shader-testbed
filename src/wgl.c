@@ -31,7 +31,7 @@ bool wgl_init_context_creation_extensions(HINSTANCE instance)
     WNDCLASSEXW window_class = {
         .cbSize = sizeof(WNDCLASSEXW),
         .style = CS_OWNDC,
-        .lpfnWndProc = DefWindowProcA,
+        .lpfnWndProc = DefWindowProcW,
         .cbClsExtra = 0,
         .cbWndExtra = 0,
         .hInstance = instance,
