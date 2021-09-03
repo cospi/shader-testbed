@@ -6,14 +6,13 @@ uniform sampler2D u_texture_0;
 uniform sampler2D u_texture_1;
 uniform sampler2D u_texture_2;
 uniform sampler2D u_texture_3;
+uniform mat4 u_projection;
 
-layout (location = 0) in vec3 in_position;
-layout (location = 1) in vec2 in_uv;
+in vec2 uv;
 
-out vec2 uv;
+out vec4 out_color;
 
 void main()
 {
-    gl_Position = vec4(in_position, 1.0);
-    uv = in_uv;
+    out_color = texture2D(u_texture_0, uv);
 }

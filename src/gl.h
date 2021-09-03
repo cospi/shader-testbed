@@ -38,6 +38,7 @@ typedef void (APIENTRY * PFNGLUSEPROGRAMPROC)(GLuint);
 typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC)(GLuint, const GLchar *);
 typedef void (APIENTRY * PFNGLUNIFORM1FPROC)(GLint, GLfloat);
 typedef void (APIENTRY * PFNGLUNIFORM1IPROC)(GLint, GLint);
+typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *);
 typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
 
 extern PFNGLBINDBUFFERPROC glBindBuffer;
@@ -61,6 +62,7 @@ extern PFNGLUSEPROGRAMPROC glUseProgram;
 extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1FPROC glUniform1f;
 extern PFNGLUNIFORM1IPROC glUniform1i;
+extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 
 #endif // SHADER_TESTBED_GL_H_

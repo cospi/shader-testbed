@@ -29,7 +29,7 @@ Texture *texture_create_from_image(const Image *image)
         return NULL;
     }
 
-    Texture *texture = malloc(sizeof(texture));
+    Texture *texture = malloc(sizeof(Texture));
     if (texture == NULL) {
         return NULL;
     }

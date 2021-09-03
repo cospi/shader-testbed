@@ -151,7 +151,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
         LONGLONG performance_counter = query_performance_result.QuadPart;
         long double delta_time = (performance_counter - previous_performance_counter) / performance_frequency;
         time += delta_time;
-        testbed_update((GLsizei)s_width, (GLsizei)s_height, time, delta_time);
+        testbed_update((GLsizei)s_width, (GLsizei)s_height, (float)time, (float)delta_time);
         previous_performance_counter = performance_counter;
 
         SwapBuffers(device_context);

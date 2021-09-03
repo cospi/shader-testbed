@@ -283,6 +283,7 @@ bool wgl_init_extensions(void)
     INIT_PROC(PFNGLUNIFORM1FPROC, glUniform1f);
     INIT_PROC(PFNGLUNIFORM1IPROC, glUniform1i);
     INIT_PROC(PFNGLACTIVETEXTUREPROC, glActiveTexture);
+    INIT_PROC(PFNGLUNIFORMMATRIX4FVPROC, glUniformMatrix4fv);
 
     #undef INIT_PROC
 
