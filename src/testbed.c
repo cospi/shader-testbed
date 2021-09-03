@@ -146,8 +146,8 @@ static void draw_mesh(
         glUniform1f(shader_info->time_uniform, time);
         glUniform1f(shader_info->delta_time_uniform, delta_time);
         glUniformMatrix4fv(shader_info->transform_uniform, 1, GL_TRUE, transform);
+        mesh_draw(mesh);
     }
-    mesh_draw(mesh);
 }
 
 static void draw_quad_mesh(float time, float delta_time)
