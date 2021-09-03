@@ -34,7 +34,11 @@ static char *read_text_file(const char *path)
     }
 
     rewind(file);
-    fread(text, 1, (size_t)size, file);
+    if (fread(text, (size_t)size, 1, file) != 1) {
+        free(text);
+        text = NULL;
+        goto out_close_file;
+    }
     text[size] = '\0';
 
 out_close_file:

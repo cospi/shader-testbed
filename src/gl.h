@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 typedef ptrdiff_t GLsizeiptr;
 typedef char GLchar;
@@ -17,6 +17,12 @@ typedef char GLchar;
 #define GL_COMPILE_STATUS 0x8B81
 #define GL_LINK_STATUS 0x8B82
 
+// gl.h doesn't define PFNGLSHADERSOURCEPROC or PFNGLACTIVETEXTUREPROC on Windows.
+#ifdef _WIN32
+typedef void (APIENTRY * PFNGLSHADERSOURCEPROC)(GLuint, GLsizei, const GLchar **, const GLint *);
+typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
+#endif // _WIN32
+
 typedef void (APIENTRY * PFNGLGENBUFFERSPROC)(GLsizei, GLuint *);
 typedef void (APIENTRY * PFNGLBINDBUFFERPROC)(GLenum, GLuint);
 typedef void (APIENTRY * PFNGLBUFFERDATAPROC)(GLenum, GLsizeiptr, const GLvoid *, GLenum);
@@ -26,7 +32,6 @@ typedef void (APIENTRY * PFNGLVERTEXATTRIBPOINTERPROC)(GLuint, GLint, GLenum, GL
 typedef void (APIENTRY * PFNGLENABLEVERTEXATTRIBARRAYPROC)(GLuint);
 typedef GLuint (APIENTRY * PFNGLCREATESHADERPROC)(GLenum);
 typedef void (APIENTRY * PFNGLDELETESHADERPROC)(GLuint);
-typedef void (APIENTRY * PFNGLSHADERSOURCEPROC)(GLuint, GLsizei, const GLchar **, const GLint *);
 typedef void (APIENTRY * PFNGLCOMPILESHADERPROC)(GLuint);
 typedef void (APIENTRY * PFNGLGETSHADERIVPROC)(GLuint, GLenum, GLint *);
 typedef GLuint (APIENTRY * PFNGLCREATEPROGRAMPROC)(void);
@@ -39,7 +44,6 @@ typedef GLint (APIENTRY * PFNGLGETUNIFORMLOCATIONPROC)(GLuint, const GLchar *);
 typedef void (APIENTRY * PFNGLUNIFORM1FPROC)(GLint, GLfloat);
 typedef void (APIENTRY * PFNGLUNIFORM1IPROC)(GLint, GLint);
 typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC)(GLint, GLsizei, GLboolean, const GLfloat *);
-typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
 
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLGENBUFFERSPROC glGenBuffers;
@@ -63,6 +67,10 @@ extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 extern PFNGLUNIFORM1FPROC glUniform1f;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+
+// gl.h doesn't declare glActiveTexture on Windows.
+#ifdef _WIN32
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
+#endif // _WIN32
 
 #endif // SHADER_TESTBED_GL_H_

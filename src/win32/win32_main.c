@@ -2,8 +2,8 @@
 
 #include <Windows.h>
 
-#include "testbed.h"
-#include "wgl.h"
+#include "../testbed.h"
+#include "../wgl.h"
 
 static bool s_running = true;
 static UINT s_width = 0;

@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 void testbed_init(void);
 void testbed_update(GLsizei width, GLsizei height, float time, float delta_time);

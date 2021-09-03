@@ -1,6 +1,6 @@
 #include "wgl.h"
 
-#include "gl.h"
+#include "../gl.h"
 
 #define WGL_DRAW_TO_WINDOW_ARB 0x2001
 #define WGL_ACCELERATION_ARB 0x2003

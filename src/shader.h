@@ -3,7 +3,7 @@
 
 #include <stddef.h>
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 typedef struct Shader {
     GLuint program;

@@ -13,10 +13,16 @@ SRC_EXT := .c
 OBJ_EXT := .o
 DEP_EXT := .d
 
-SRC := $(shell find $(SRC_DIR) -name *$(SRC_EXT))
+SRC := $(wildcard $(SRC_DIR)*$(SRC_EXT))
+ifeq ($(OS), Windows_NT)
+	SRC += $(wildcard $(SRC_DIR)win32/*$(SRC_EXT))
+	OUT := $(BIN_DIR)shader-testbed.exe
+else
+	SRC += $(wildcard $(SRC_DIR)x11/*$(SRC_EXT))
+	OUT := $(BIN_DIR)shader-testbed
+endif
 OBJ := $(SRC:$(SRC_DIR)%$(SRC_EXT)=$(OBJ_DIR)%$(OBJ_EXT))
 DEP := $(SRC:$(SRC_DIR)%$(SRC_EXT)=$(DEP_DIR)%$(DEP_EXT))
-OUT := $(BIN_DIR)shader-testbed.exe
 
 CC := gcc
 CFLAGS += \
@@ -148,7 +154,11 @@ else
 	CFLAGS += -DNDEBUG -O3
 endif
 
-LDFLAGS := -lgdi32 -lopengl32
+ifeq ($(OS), Windows_NT)
+	LDFLAGS += -lgdi32 -lopengl32
+else
+	LDFLAGS += -lX11 -lGL -lm
+endif
 
 TARGET_OBJ_TO_DEP = $(@:$(OBJ_DIR)%$(OBJ_EXT)=$(DEP_DIR)%$(DEP_EXT))
 

@@ -37,11 +37,11 @@ static Vertex *push_quad_vertices(Vertex *vertices, float extents)
 static GLushort *push_quad_indices(GLushort *indices, GLushort offset)
 {
     *(indices++) = offset;
-    *(indices++) = offset + 1;
-    *(indices++) = offset + 2;
+    *(indices++) = (GLushort)(offset + 1);
+    *(indices++) = (GLushort)(offset + 2);
     *(indices++) = offset;
-    *(indices++) = offset + 2;
-    *(indices++) = offset + 3;
+    *(indices++) = (GLushort)(offset + 2);
+    *(indices++) = (GLushort)(offset + 3);
     return indices;
 }
 
@@ -82,7 +82,7 @@ static Vertex *push_cube_vertices(Vertex *vertices, float extents)
 
 static GLushort *push_cube_indices(GLushort *indices)
 {
-    for (GLushort offset = 0; offset < 24; offset += 4)
+    for (GLushort offset = 0; offset < 24; offset = (GLushort)(offset + 4))
     {
         indices = push_quad_indices(indices, offset);
     }

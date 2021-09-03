@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 #include "image.h"
 

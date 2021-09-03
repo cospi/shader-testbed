@@ -1,5 +1,8 @@
 #include "texture.h"
 
+#include <stddef.h>
+#include <stdlib.h>
+
 static GLuint create_texture(const Image *image)
 {
     GLuint texture;

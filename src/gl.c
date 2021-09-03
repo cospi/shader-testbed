@@ -22,4 +22,8 @@ PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
 PFNGLUNIFORM1FPROC glUniform1f;
 PFNGLUNIFORM1IPROC glUniform1i;
 PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
+
+// glActiveTexture isn't defined on Windows.
+#ifdef _WIN32
 PFNGLACTIVETEXTUREPROC glActiveTexture;
+#endif // _WIN32

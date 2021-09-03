@@ -1,7 +1,7 @@
 #ifndef SHADER_TESTBED_GEOMETRY_H_
 #define SHADER_TESTBED_GEOMETRY_H_
 
-#include <gl/GL.h>
+#include <GL/gl.h>
 
 #include "vertex.h"
 
