@@ -69,7 +69,6 @@ static inline void matrix4x4_rotate(Matrix4x4 matrix, Vector3 axis, float angle)
     matrix[15] = 1.0f;
 }
 
-
 static inline void matrix4x4_perspective(
     Matrix4x4 matrix,
     float fov,
