@@ -7,8 +7,8 @@ Shader Testbed is a GLSL shader prototyping application.
 ## Instructions
 
 - Open the application.
-- Modify the shaders in `res/shaders` or the textures in `res/textures`.
-- Hit F5 to reload the shaders and textures.
+- Modify the shaders in `res/shaders` or the images in `res/images`.
+- Hit F5 to reload shaders and textures.
 
 ## Current Limitations
 
@@ -17,7 +17,7 @@ Shader Testbed is a GLSL shader prototyping application.
 
 ## TODO
 
-- X11 support
+- X11/GLX support
 - User interface controls
 
 ## License
