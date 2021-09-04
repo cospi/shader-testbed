@@ -70,6 +70,7 @@ static void shader_info_fini(ShaderInfo *shader_info)
         shader_info->shader = NULL;
         shader_info->time_uniform = -1;
         shader_info->delta_time_uniform = -1;
+        shader_info->transform_uniform = -1;
     }
 }
 
