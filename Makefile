@@ -170,6 +170,7 @@ clean :
 $(OUT) : $(OBJ)
 	$(shell mkdir -p $(dir $@))
 	$(CC) $^ -o $@ $(LDFLAGS)
+	cp -r res/ $(BIN_DIR)res/
 
 $(OBJ_DIR)%$(OBJ_EXT) : $(SRC_DIR)%$(SRC_EXT)
 	$(shell mkdir -p $(dir $@) $(dir $(TARGET_OBJ_TO_DEP)))
