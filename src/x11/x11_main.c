@@ -83,7 +83,7 @@ int main(void)
     window_attribs.colormap = colormap;
     window_attribs.background_pixmap = None;
     window_attribs.border_pixel = 0;
-    window_attribs.event_mask = StructureNotifyMask;
+    window_attribs.event_mask = StructureNotifyMask | KeyPressMask;
     window = XCreateWindow(
         display,
         root_window,
@@ -135,6 +135,11 @@ int main(void)
             case ConfigureNotify:
                 width = event.xconfigure.width;
                 height = event.xconfigure.height;
+                break;
+            case KeyPress:
+                if (XLookupKeysym(&event.xkey, 0) == XK_F5) {
+                    testbed_reload();
+                }
                 break;
             default:
                 break;
