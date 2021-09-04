@@ -6,18 +6,17 @@ Shader Testbed is a GLSL shader prototyping application.
 
 ## Instructions
 
+- Run `make`.
 - Open the application.
 - Modify the shaders in `res/shaders` or the images in `res/images`.
 - Hit F5 to reload shaders and textures.
 
-## Current Limitations
+## Limitations
 
-- Win32/WGL only
 - Images must be uncompressed TGAs with bottom left origin.
 
 ## TODO
 
-- X11/GLX support
 - User interface controls
 
 ## License
