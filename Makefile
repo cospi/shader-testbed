@@ -83,7 +83,6 @@ CFLAGS += \
 	-Wjump-misses-init \
 	-Wlogical-not-parentheses \
 	-Wlogical-op \
-	-Wlong-long \
 	-Wmain \
 	-Wmaybe-uninitialized \
 	-Wmemset-elt-size \
@@ -157,6 +156,7 @@ endif
 ifeq ($(OS), Windows_NT)
 	LDFLAGS += -lgdi32 -lopengl32
 else
+	CFLAGS += -D_POSIX_C_SOURCE=199309L
 	LDFLAGS += -lX11 -lGL -lm
 endif
 

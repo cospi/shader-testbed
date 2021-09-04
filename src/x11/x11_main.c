@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 #include <GL/glx.h>
 #include <X11/Xlib.h>
@@ -7,14 +8,53 @@
 #include "glx.h"
 #include "../testbed.h"
 
+#define NSEC_PER_SEC 1000000000LL
+
 static void print_error(const char *error)
 {
     fprintf(stderr, "%s\n", error);
 }
 
+static long long get_time_nsec(void)
+{
+    struct timespec time;
+    if (clock_gettime(CLOCK_MONOTONIC_RAW, &time) == -1) {
+        return 0LL;
+    }
+    return ((long long)time.tv_sec * NSEC_PER_SEC) + time.tv_nsec;
+}
+
+static float nsec_to_sec(long long nsec)
+{
+    return (float)((long double)nsec / NSEC_PER_SEC);
+}
+
 int main(void)
 {
     // Resource cleanup is left to the OS.
+
+    Display *display = XOpenDisplay(NULL);
+    if (display == NULL) {
+        print_error("XOpenDisplay() failed.");
+        return -1;
+    }
+
+    int screen = DefaultScreen(display);
+    if (!glx_init_context_creation_extensions(display, screen)) {
+        print_error("Initializing OpenGL context creation extensions failed.");
+        return -1;
+    }
+
+    // FBConfigs require GLX 1.3 or later.
+    int glx_major, glx_minor;
+    if (
+        (glXQueryVersion(display, &glx_major, &glx_minor) == False)
+        || (glx_major < 1)
+        || ((glx_major == 1) && (glx_minor < 3))
+    ) {
+        print_error("Unsupported GLX version.");
+        return -1;
+    }
 
     int fb_config_attribs[] = {
         GLX_X_RENDERABLE, True,
@@ -29,62 +69,29 @@ int main(void)
         GLX_DOUBLEBUFFER, True,
         None
     };
-    bool running = true;
-    int width = 1280, height = 720;
-    float time = 0.0f;
-    Display *display;
-    int glx_major, glx_minor, screen, fb_config_count;
-    GLXFBConfig *fb_configs, fb_config;
-    XVisualInfo *visual_info;
-    Visual *visual;
-    Window root_window;
-    Colormap colormap;
-    XSetWindowAttributes window_attribs;
-    Window window;
-    Atom wm_delete_window;
-    GLXContext context;
-
-    display = XOpenDisplay(NULL);
-    if (display == NULL) {
-        print_error("XOpenDisplay() failed.");
-        return -1;
-    }
-
-    screen = DefaultScreen(display);
-    if (!glx_init_context_creation_extensions(display, screen)) {
-        print_error("Initializing OpenGL context creation extensions failed.");
-        return -1;
-    }
-
-    // FBConfigs require GLX 1.3 or later.
-    if (
-        (glXQueryVersion(display, &glx_major, &glx_minor) == False)
-        || (glx_major < 1)
-        || ((glx_major == 1) && (glx_minor < 3))
-    ) {
-        print_error("Unsupported GLX version.");
-        return -1;
-    }
-
-    fb_configs = glXChooseFBConfig(display, screen, fb_config_attribs, &fb_config_count);
+    int fb_config_count;
+    GLXFBConfig *fb_configs = glXChooseFBConfig(display, screen, fb_config_attribs, &fb_config_count);
     if (fb_configs == NULL) {
         print_error("No FB configs found.");
         return -1;
     }
 
-    fb_config = fb_configs[0];
+    GLXFBConfig fb_config = fb_configs[0];
     XFree(fb_configs);
 
-    visual_info = glXGetVisualFromFBConfig(display, fb_config);
-    visual = visual_info->visual;
-    root_window = RootWindow(display, screen);
-    colormap = XCreateColormap(display, root_window, visual, AllocNone);
+    XVisualInfo *visual_info = glXGetVisualFromFBConfig(display, fb_config);
+    Visual *visual = visual_info->visual;
+    Window root_window = RootWindow(display, screen);
+    Colormap colormap = XCreateColormap(display, root_window, visual, AllocNone);
 
+    int width = 1280;
+    int height = 720;
+    XSetWindowAttributes window_attribs;
     window_attribs.colormap = colormap;
     window_attribs.background_pixmap = None;
     window_attribs.border_pixel = 0;
     window_attribs.event_mask = StructureNotifyMask | KeyPressMask;
-    window = XCreateWindow(
+    Window window = XCreateWindow(
         display,
         root_window,
         0,
@@ -104,10 +111,10 @@ int main(void)
     XStoreName(display, window, "Shader Testbed");
     XMapWindow(display, window);
 
-    wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
+    Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(display, window, &wm_delete_window, 1);
 
-    context = glx_create_context(display, fb_config);
+    GLXContext context = glx_create_context(display, fb_config);
     if (context == NULL) {
         print_error("Creating OpenGL context failed.");
         return -1;
@@ -122,6 +129,10 @@ int main(void)
 
     testbed_init();
 
+    long long time_nsec = 0LL;
+    long long previous_time_nsec = get_time_nsec();
+
+    bool running = true;
     while (running) {
         while (XPending(display) > 0) {
             XEvent event;
@@ -146,9 +157,11 @@ int main(void)
             }
         }
 
-        // TODO: Proper timing
-        time += 0.01f;
-        testbed_update((GLsizei)width, (GLsizei)height, time, 0.01f);
+        long long current_time_nsec = get_time_nsec();
+        long long delta_time_nsec = (current_time_nsec - previous_time_nsec);
+        time_nsec += delta_time_nsec;
+        testbed_update((GLsizei)width, (GLsizei)height, nsec_to_sec(time_nsec), nsec_to_sec(delta_time_nsec));
+        previous_time_nsec = current_time_nsec;
 
         glXSwapBuffers(display, window);
     }
