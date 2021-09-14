@@ -127,7 +127,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
 
     long double time = 0.0L;
     LARGE_INTEGER query_performance_result;
-    // QueryPerformaceFrequency and QueryPerformanceCounter never fail on Windows XP or later.
+    // QueryPerformanceFrequency and QueryPerformanceCounter never fail on Windows XP or later.
     QueryPerformanceFrequency(&query_performance_result);
     long double performance_frequency = (long double)query_performance_result.QuadPart;
     QueryPerformanceCounter(&query_performance_result);

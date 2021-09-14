@@ -5,7 +5,7 @@
 
 #include "gl.h"
 
-// Using fseek and ftell can be unrealiable, but seems to work on the supported platforms.
+// Using fseek and ftell can be unreliable, but seems to work on the supported platforms.
 static char *read_text_file(const char *path)
 {
     char *text = NULL;

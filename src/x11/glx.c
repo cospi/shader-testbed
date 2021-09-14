@@ -20,7 +20,7 @@ static bool has_extension(const char *extensions, const char *extension)
         return false;
     }
 
-    const size_t extension_length = strlen(extension);
+    size_t extension_length = strlen(extension);
     if (extension_length == 0) {
         return false;
     }
@@ -109,6 +109,8 @@ bool glx_init_extensions(void)
     INIT_PROC(PFNGLBINDBUFFERPROC, glBindBuffer);
     INIT_PROC(PFNGLGENBUFFERSPROC, glGenBuffers);
     INIT_PROC(PFNGLBUFFERDATAPROC, glBufferData);
+    INIT_PROC(PFNGLMAPBUFFERPROC, glMapBuffer);
+    INIT_PROC(PFNGLUNMAPBUFFERPROC, glUnmapBuffer);
     INIT_PROC(PFNGLGENVERTEXARRAYSPROC, glGenVertexArrays);
     INIT_PROC(PFNGLBINDVERTEXARRAYPROC, glBindVertexArray);
     INIT_PROC(PFNGLVERTEXATTRIBPOINTERPROC, glVertexAttribPointer);

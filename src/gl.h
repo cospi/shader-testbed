@@ -9,9 +9,11 @@ typedef ptrdiff_t GLsizeiptr;
 typedef char GLchar;
 
 #define GL_TEXTURE0 0x84C0
-#define GL_STATIC_DRAW 0x88E4
 #define GL_ARRAY_BUFFER 0x8892
 #define GL_ELEMENT_ARRAY_BUFFER 0x8893
+#define GL_WRITE_ONLY 0x88B9
+#define GL_STATIC_DRAW 0x88E4
+#define GL_DYNAMIC_DRAW 0x88E8
 #define GL_FRAGMENT_SHADER 0x8B30
 #define GL_VERTEX_SHADER 0x8B31
 #define GL_COMPILE_STATUS 0x8B81
@@ -26,6 +28,8 @@ typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
 typedef void (APIENTRY * PFNGLGENBUFFERSPROC)(GLsizei, GLuint *);
 typedef void (APIENTRY * PFNGLBINDBUFFERPROC)(GLenum, GLuint);
 typedef void (APIENTRY * PFNGLBUFFERDATAPROC)(GLenum, GLsizeiptr, const GLvoid *, GLenum);
+typedef void *(APIENTRY * PFNGLMAPBUFFERPROC)(GLenum, GLenum);
+typedef void (APIENTRY * PFNGLUNMAPBUFFERPROC)(GLenum);
 typedef void (APIENTRY * PFNGLGENVERTEXARRAYSPROC)(GLsizei, GLuint *);
 typedef void (APIENTRY * PFNGLBINDVERTEXARRAYPROC)(GLuint);
 typedef void (APIENTRY * PFNGLVERTEXATTRIBPOINTERPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *);
@@ -48,6 +52,8 @@ typedef void (APIENTRY * PFNGLUNIFORMMATRIX4FVPROC)(GLint, GLsizei, GLboolean, c
 extern PFNGLBINDBUFFERPROC glBindBuffer;
 extern PFNGLGENBUFFERSPROC glGenBuffers;
 extern PFNGLBUFFERDATAPROC glBufferData;
+extern PFNGLMAPBUFFERPROC glMapBuffer;
+extern PFNGLUNMAPBUFFERPROC glUnmapBuffer;
 extern PFNGLGENVERTEXARRAYSPROC glGenVertexArrays;
 extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
 extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;

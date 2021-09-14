@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static GLuint create_texture(const Image *image)
+static GLuint create_texture(const Image *image, GLint filter)
 {
     GLuint texture;
     glGenTextures(1, &texture);
@@ -19,14 +19,14 @@ static GLuint create_texture(const Image *image)
         GL_UNSIGNED_BYTE,
         image->pixels
     );
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     return texture;
 }
 
-Texture *texture_create_from_image(const Image *image)
+Texture *texture_create_from_image(const Image *image, GLint filter)
 {
     if (image == NULL) {
         return NULL;
@@ -37,13 +37,13 @@ Texture *texture_create_from_image(const Image *image)
         return NULL;
     }
 
-    texture->texture = create_texture(image);
+    texture->texture = create_texture(image, filter);
     texture->width = image->width;
     texture->height = image->height;
     return texture;
 }
 
-Texture *texture_create_from_tga(const char *tga_path)
+Texture *texture_create_from_tga(const char *tga_path, GLint filter)
 {
     if (tga_path == NULL) {
         return NULL;
@@ -54,7 +54,7 @@ Texture *texture_create_from_tga(const char *tga_path)
         return NULL;
     }
 
-    Texture *texture = texture_create_from_image(image);
+    Texture *texture = texture_create_from_image(image, filter);
     image_destroy(image);
     return texture;
 }

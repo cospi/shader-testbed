@@ -13,8 +13,8 @@ typedef struct Texture {
     uint16_t height;
 } Texture;
 
-Texture *texture_create_from_image(const Image *image);
-Texture *texture_create_from_tga(const char *tga_path);
+Texture *texture_create_from_image(const Image *image, GLint filter);
+Texture *texture_create_from_tga(const char *tga_path, GLint filter);
 void texture_destroy(Texture *texture);
 
 #endif // SHADER_TESTBED_TEXTURE_H_

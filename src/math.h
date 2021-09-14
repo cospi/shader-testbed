@@ -18,7 +18,23 @@ typedef struct Vector3 {
     float z;
 } Vector3;
 
+typedef struct Rect {
+    Vector2 position;
+    Vector2 size;
+} Rect;
+
 typedef float Matrix4x4[16];
+
+static inline Vector2 vector2_sum(Vector2 left, Vector2 right)
+{
+    return (Vector2) { left.x + right.x, left.y + right.y };
+}
+
+static inline void rect_min_max(const Rect *rect, Vector2 *min, Vector2 *max)
+{
+    *min = rect->position;
+    *max = vector2_sum(*min, rect->size);
+}
 
 static inline void matrix4x4_zero(Matrix4x4 matrix)
 {
@@ -66,6 +82,26 @@ static inline void matrix4x4_rotate(Matrix4x4 matrix, Vector3 axis, float angle)
     matrix[8] = (xz * d) - ys;
     matrix[9] = (yz * d) + xs;
     matrix[10] = (zz * d) + c;
+    matrix[15] = 1.0f;
+}
+
+static inline void matrix4x4_orthographic(
+    Matrix4x4 matrix,
+    float left,
+    float right,
+    float bottom,
+    float top,
+    float near_plane,
+    float far_plane
+)
+{
+    matrix4x4_zero(matrix);
+    matrix[0] = 2.0f / (right - left);
+    matrix[3] = (left + right) / (left - right);
+    matrix[5] = 2.0f / (top - bottom);
+    matrix[7] = (bottom + top) / (bottom - top);
+    matrix[10] = 2.0f / (near_plane - far_plane);
+    matrix[11] = (near_plane + far_plane) / (near_plane - far_plane);
     matrix[15] = 1.0f;
 }
 
