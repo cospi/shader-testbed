@@ -19,8 +19,9 @@ typedef char GLchar;
 #define GL_COMPILE_STATUS 0x8B81
 #define GL_LINK_STATUS 0x8B82
 
-// gl.h doesn't define PFNGLSHADERSOURCEPROC or PFNGLACTIVETEXTUREPROC on Windows.
+// gl.h is missing some definitions on Windows.
 #ifdef _WIN32
+typedef void (APIENTRY * PFNGLUNMAPBUFFERPROC)(GLenum);
 typedef void (APIENTRY * PFNGLSHADERSOURCEPROC)(GLuint, GLsizei, const GLchar **, const GLint *);
 typedef void (APIENTRY * PFNGLACTIVETEXTUREPROC)(GLenum);
 #endif // _WIN32
@@ -73,9 +74,8 @@ extern PFNGLUNIFORM1FPROC glUniform1f;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 
-// gl.h on Windows is missing some OpenGL definitions that exist on other platforms.
+// gl.h missing glActiveTexture on Windows.
 #ifdef _WIN32
-typedef void (APIENTRY * PFNGLUNMAPBUFFERPROC)(GLenum);
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 #endif // _WIN32
 
