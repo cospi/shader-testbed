@@ -29,7 +29,6 @@ typedef void (APIENTRY * PFNGLGENBUFFERSPROC)(GLsizei, GLuint *);
 typedef void (APIENTRY * PFNGLBINDBUFFERPROC)(GLenum, GLuint);
 typedef void (APIENTRY * PFNGLBUFFERDATAPROC)(GLenum, GLsizeiptr, const GLvoid *, GLenum);
 typedef void *(APIENTRY * PFNGLMAPBUFFERPROC)(GLenum, GLenum);
-typedef void (APIENTRY * PFNGLUNMAPBUFFERPROC)(GLenum);
 typedef void (APIENTRY * PFNGLGENVERTEXARRAYSPROC)(GLsizei, GLuint *);
 typedef void (APIENTRY * PFNGLBINDVERTEXARRAYPROC)(GLuint);
 typedef void (APIENTRY * PFNGLVERTEXATTRIBPOINTERPROC)(GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *);
@@ -74,8 +73,9 @@ extern PFNGLUNIFORM1FPROC glUniform1f;
 extern PFNGLUNIFORM1IPROC glUniform1i;
 extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
 
-// gl.h doesn't declare glActiveTexture on Windows.
+// gl.h on Windows is missing some OpenGL definitions that exist on other platforms.
 #ifdef _WIN32
+typedef void (APIENTRY * PFNGLUNMAPBUFFERPROC)(GLenum);
 extern PFNGLACTIVETEXTUREPROC glActiveTexture;
 #endif // _WIN32
 
