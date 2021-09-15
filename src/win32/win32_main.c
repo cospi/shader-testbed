@@ -121,7 +121,10 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous_instance, LPSTR cmd_li
     s_width = (UINT)(window_rect.right - window_rect.left);
     s_height = (UINT)(window_rect.bottom - window_rect.top);
 
-    testbed_init();
+    if (!testbed_init()) {
+        show_error(L"Initializing testbed failed.");
+        return -1;
+    }
 
     ShowWindow(window, SW_SHOW);
 

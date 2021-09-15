@@ -1,6 +1,7 @@
 #ifndef SHADER_TESTBED_MESH_H_
 #define SHADER_TESTBED_MESH_H_
 
+#include <stdbool.h>
 #include <stddef.h>
 
 #include "gl.h"
@@ -12,7 +13,7 @@ typedef struct Mesh {
     size_t index_count;
 } Mesh;
 
-void mesh_init(Mesh *mesh, const Vertex *vertices, size_t vertex_count, const GLushort *indices, size_t index_count);
+bool mesh_init(Mesh *mesh, const Vertex *vertices, size_t vertex_count, const GLushort *indices, size_t index_count);
 void mesh_draw(const Mesh *mesh);
 
 #endif // SHADER_TESTBED_MESH_H_

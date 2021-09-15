@@ -48,6 +48,14 @@ static const char *TEXTURE_UNIFORM_NAMES[TEXTURE_COUNT] = {
 static const Vector3 CUBE_POSITION = { 0.0f, 0.0f, -2.0f };
 static const Vector3 CUBE_ROTATION_AXIS = { 0.70710678118f, 0.70710678118f, 0.0f };
 
+static SpriteBatch s_sprite_batch = { 0 };
+static Shader *s_sprite_batch_shader = NULL;
+static GLint s_sprite_batch_projection_uniform = -1;
+
+static Font s_font = { 0 };
+static char s_text[1024] = "F5 to refresh shaders and textures\n";
+static size_t s_text_fps_index = 0;
+
 static Mesh s_quad_mesh = { 0 };
 static ShaderInfo s_quad_shader_info = { 0 };
 
@@ -55,13 +63,6 @@ static Mesh s_cube_mesh = { 0 };
 static ShaderInfo s_cube_shader_info = { 0 };
 
 static Texture *s_textures[TEXTURE_COUNT] = { NULL, NULL, NULL, NULL };
-
-static Font s_font = { 0 };
-static Shader *s_sprite_batch_shader = NULL;
-static GLint s_sprite_batch_projection_uniform = -1;
-static SpriteBatch s_sprite_batch = { 0 };
-static char s_text[1024] = "F5 to refresh shaders and textures\n";
-static size_t s_text_fps_index = 0;
 
 static void set_uniform_1i(GLint uniform, GLint value)
 {
@@ -110,6 +111,24 @@ static void shader_info_fini(ShaderInfo *shader_info)
         shader_info->delta_time_uniform = -1;
         shader_info->transform_uniform = -1;
     }
+}
+
+static bool init_sprite_batch(void)
+{
+    return sprite_batch_init(&s_sprite_batch, (sizeof s_text) - 1 /* Null character */);
+}
+
+static void init_sprite_batch_shader(void)
+{
+    s_sprite_batch_shader = shader_create("res/shaders/sprite.vert", "res/shaders/sprite.frag");
+    if (s_sprite_batch_shader != NULL) {
+        s_sprite_batch_projection_uniform = glGetUniformLocation(s_sprite_batch_shader->program, "u_projection");
+    }
+}
+
+static void init_font(void)
+{
+    font_init_from_tga(&s_font, "res/images/font.tga");
 }
 
 static void init_quad_mesh(void)
@@ -170,22 +189,15 @@ static void reload_textures(void)
     init_textures();
 }
 
-static void init_font(void)
+static void bind_mesh_textures(void)
 {
-    font_init_from_tga(&s_font, "res/images/font.tga");
-}
-
-static void init_sprite_batch_shader(void)
-{
-    s_sprite_batch_shader = shader_create("res/shaders/sprite.vert", "res/shaders/sprite.frag");
-    if (s_sprite_batch_shader != NULL) {
-        s_sprite_batch_projection_uniform = glGetUniformLocation(s_sprite_batch_shader->program, "u_projection");
+    for (int i = 0; i < TEXTURE_COUNT; ++i) {
+        const Texture *texture = s_textures[i];
+        if (texture != NULL) {
+            glActiveTexture((GLenum)(GL_TEXTURE0 + i));
+            glBindTexture(GL_TEXTURE_2D, texture->texture);
+        }
     }
-}
-
-static void init_sprite_batch(void)
-{
-    sprite_batch_init(&s_sprite_batch, sizeof s_text - 1 /* Null character */);
 }
 
 static void draw_mesh(
@@ -225,7 +237,7 @@ static void draw_cube_mesh(GLsizei width, GLsizei height, float time, float delt
     draw_mesh(&s_cube_mesh, &s_cube_shader_info, time, delta_time, transform);
 }
 
-static void draw_text(GLsizei width, GLsizei height, int fps)
+static void draw_info_texts(GLsizei width, GLsizei height, int fps)
 {
     if ((s_sprite_batch_shader == NULL) || (s_sprite_batch_projection_uniform == -1) || (s_font.texture == NULL)) {
         return;
@@ -255,39 +267,38 @@ static void draw_text(GLsizei width, GLsizei height, int fps)
     }
 }
 
-void testbed_init(void)
+bool testbed_init(void)
 {
+    if (!init_sprite_batch()) {
+        return false;
+    }
+
+    init_sprite_batch_shader();
+    init_font();
+    s_text_fps_index = strlen(s_text);
     init_quad_mesh();
     init_quad_shader();
     init_cube_mesh();
     init_cube_shader();
     init_textures();
-    init_font();
-    init_sprite_batch_shader();
-    init_sprite_batch();
-    s_text_fps_index = strlen(s_text);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    return true;
 }
 
 void testbed_update(GLsizei width, GLsizei height, float time, float delta_time)
 {
-    for (int i = 0; i < TEXTURE_COUNT; ++i) {
-        const Texture *texture = s_textures[i];
-        if (texture != NULL) {
-            glActiveTexture((GLenum)(GL_TEXTURE0 + i));
-            glBindTexture(GL_TEXTURE_2D, texture->texture);
-        }
-    }
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    bind_mesh_textures();
     draw_quad_mesh(time, delta_time);
     glClear(GL_DEPTH_BUFFER_BIT);
     draw_cube_mesh(width, height, time, delta_time);
-    draw_text(width, height, (int)(1.0f / delta_time));
+    draw_info_texts(width, height, (int)(1.0f / delta_time));
 }
 
 void testbed_reload(void)

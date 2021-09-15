@@ -83,6 +83,7 @@ bool sprite_batch_init(SpriteBatch *sprite_batch, size_t sprite_capacity)
     sprite_batch->sprite_capacity = sprite_capacity;
     sprite_batch->sprite_count = 0;
     sprite_batch->mapped_buffer = NULL;
+
     return true;
 }
 

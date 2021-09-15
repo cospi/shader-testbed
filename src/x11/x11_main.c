@@ -127,7 +127,9 @@ int main(void)
         return -1;
     }
 
-    testbed_init();
+    if (!testbed_init()) {
+        print_error("Initializing testbed failed.");
+    }
 
     long long time_nsec = 0LL;
     long long previous_time_nsec = get_time_nsec();

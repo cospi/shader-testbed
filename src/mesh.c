@@ -2,10 +2,10 @@
 
 #include "gl.h"
 
-void mesh_init(Mesh *mesh, const Vertex *vertices, size_t vertex_count, const GLushort *indices, size_t index_count)
+bool mesh_init(Mesh *mesh, const Vertex *vertices, size_t vertex_count, const GLushort *indices, size_t index_count)
 {
     if (mesh == NULL) {
-        return;
+        return false;
     }
 
     GLuint vertex_array;
@@ -29,6 +29,8 @@ void mesh_init(Mesh *mesh, const Vertex *vertices, size_t vertex_count, const GL
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, position));
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, normal));
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid *)offsetof(Vertex, uv));
+
+    return true;
 }
 
 void mesh_draw(const Mesh *mesh)
