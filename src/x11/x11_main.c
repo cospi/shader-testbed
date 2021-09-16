@@ -90,7 +90,7 @@ int main(void)
     window_attribs.colormap = colormap;
     window_attribs.background_pixmap = None;
     window_attribs.border_pixel = 0;
-    window_attribs.event_mask = StructureNotifyMask | KeyPressMask;
+    window_attribs.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
     Window window = XCreateWindow(
         display,
         root_window,
@@ -110,6 +110,14 @@ int main(void)
 
     XStoreName(display, window, "Shader Testbed");
     XMapWindow(display, window);
+
+    for (;;) {
+        XEvent event;
+        XNextEvent(display, &event);
+        if ((event.type == Expose) && (event.xexpose.count == 0)) {
+            break;
+        }
+    }
 
     Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(display, window, &wm_delete_window, 1);
