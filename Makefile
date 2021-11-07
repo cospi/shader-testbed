@@ -28,7 +28,6 @@ CC := gcc
 CFLAGS += \
 	-std=c99 \
 	-Werror \
-	-Wabi \
 	-Waddress \
 	-Wall \
 	-Walloc-zero \
