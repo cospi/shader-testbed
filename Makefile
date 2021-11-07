@@ -1,6 +1,6 @@
 .PHONY : all clean
 
-CFG ?= debug
+CFG ?= release
 
 CFG_DIR := $(CFG)/
 BIN_DIR := bin/$(CFG_DIR)
