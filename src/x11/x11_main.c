@@ -39,12 +39,6 @@ int main(void)
         return -1;
     }
 
-    int screen = DefaultScreen(display);
-    if (!glx_init_context_creation_extensions(display, screen)) {
-        print_error("Initializing OpenGL context creation extensions failed.");
-        return -1;
-    }
-
     // FBConfigs require GLX 1.3 or later.
     int glx_major, glx_minor;
     if (
@@ -53,6 +47,12 @@ int main(void)
         || ((glx_major == 1) && (glx_minor < 3))
     ) {
         print_error("Unsupported GLX version.");
+        return -1;
+    }
+
+    int screen = DefaultScreen(display);
+    if (!glx_init_context_creation_extensions(display, screen)) {
+        print_error("Initializing OpenGL context creation extensions failed.");
         return -1;
     }
 
