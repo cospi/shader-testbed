@@ -14,5 +14,5 @@ out vec4 out_color;
 
 void main()
 {
-    out_color = texture2D(u_texture_0, uv);
+    out_color = texture(u_texture_0, uv);
 }

@@ -8,5 +8,5 @@ out vec4 out_color;
 
 void main()
 {
-    out_color = texture2D(u_texture, uv);
+    out_color = texture(u_texture, uv);
 }
